@@ -39,6 +39,13 @@ function renderForm() {
 }
 
 function renderFieldHTML(field) {
+    if (field.type === 'section') {
+        const subtitleHtml = field.subtitle
+            ? `<p class="section-divider-subtitle">${escapeHtml(field.subtitle)}</p>`
+            : '';
+        return `<div class="section-divider"><h3 class="section-divider-title">${escapeHtml(field.label)}</h3>${subtitleHtml}</div>`;
+    }
+
     const req = field.required ? '<span class="required-mark">*</span>' : '';
     let inputHtml = '';
 
@@ -95,7 +102,7 @@ function renderFieldHTML(field) {
 
 // ---------- Validation ----------
 function validateForm() {
-    const fields = getFields();
+    const fields = getFields().filter(f => f.type !== 'section');
     let isValid = true;
 
     fields.forEach(field => {
@@ -180,7 +187,7 @@ publicForm.addEventListener('submit', (e) => {
 
     if (!validateForm()) return;
 
-    const fields = getFields();
+    const fields = getFields().filter(f => f.type !== 'section');
     const data = {};
     fields.forEach(field => {
         data[field.id] = getFieldValue(field);

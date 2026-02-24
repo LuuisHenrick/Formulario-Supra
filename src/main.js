@@ -28,9 +28,14 @@ const fieldId = document.getElementById('fieldId');
 const fieldType = document.getElementById('fieldType');
 const fieldLabel = document.getElementById('fieldLabel');
 const fieldPlaceholder = document.getElementById('fieldPlaceholder');
+const fieldSubtitle = document.getElementById('fieldSubtitle');
 const fieldRequired = document.getElementById('fieldRequired');
 const fieldOptions = document.getElementById('fieldOptions');
 const optionsGroup = document.getElementById('optionsGroup');
+const subtitleGroup = document.getElementById('subtitleGroup');
+const placeholderGroup = document.getElementById('placeholderGroup');
+const labelGroup = document.getElementById('labelGroup');
+const requiredGroup = document.querySelector('.form-check-group');
 
 // Confirm modal
 const confirmModal = document.getElementById('confirmModal');
@@ -99,6 +104,7 @@ const FIELD_TYPE_LABELS = {
     select: 'Seleção',
     radio: 'Escolha Única',
     checkbox: 'Múltipla Escolha',
+    section: '📑 Seção',
 };
 
 // ---------- Render Fields List ----------
@@ -111,15 +117,21 @@ function renderFieldsList() {
 
     fields.forEach((field, index) => {
         const item = document.createElement('div');
-        item.className = 'field-item';
+        item.className = field.type === 'section' ? 'field-item field-item-section' : 'field-item';
         item.draggable = true;
         item.dataset.index = index;
+
+        const subtitleHtml = field.type === 'section' && field.subtitle
+            ? `<div class="field-subtitle-text">${escapeHtml(field.subtitle)}</div>`
+            : '';
+
         item.innerHTML = `
       <div class="field-drag-handle">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></svg>
       </div>
       <div class="field-info">
         <div class="field-label-text">${escapeHtml(field.label)}</div>
+        ${subtitleHtml}
         <div class="field-type-badge">
           ${FIELD_TYPE_LABELS[field.type] || field.type}
           ${field.required ? '<span class="required-dot"></span>' : ''}
@@ -201,6 +213,13 @@ function renderPreview() {
 }
 
 function renderFieldHTML(field, isPreview = false) {
+    if (field.type === 'section') {
+        const subtitleHtml = field.subtitle
+            ? `<p class="section-divider-subtitle">${escapeHtml(field.subtitle)}</p>`
+            : '';
+        return `<div class="section-divider"><h3 class="section-divider-title">${escapeHtml(field.label)}</h3>${subtitleHtml}</div>`;
+    }
+
     const req = field.required ? '<span class="required-mark">*</span>' : '';
     const disabled = isPreview ? 'disabled' : '';
     let inputHtml = '';
@@ -245,7 +264,8 @@ function openAddModal() {
     modalTitle.textContent = 'Adicionar Campo';
     fieldForm.reset();
     fieldId.value = '';
-    optionsGroup.style.display = 'none';
+    fieldSubtitle.value = '';
+    toggleOptionsGroup('text');
     fieldModal.classList.add('show');
 }
 
@@ -257,6 +277,7 @@ function openEditModal(id) {
     fieldType.value = field.type;
     fieldLabel.value = field.label;
     fieldPlaceholder.value = field.placeholder || '';
+    fieldSubtitle.value = field.subtitle || '';
     fieldRequired.checked = field.required;
     fieldOptions.value = (field.options || []).join('\n');
     toggleOptionsGroup(field.type);
@@ -273,8 +294,18 @@ fieldType.addEventListener('change', () => {
 });
 
 function toggleOptionsGroup(type) {
+    const isSection = type === 'section';
     const needsOptions = ['select', 'radio', 'checkbox'].includes(type);
+
     optionsGroup.style.display = needsOptions ? 'block' : 'none';
+    subtitleGroup.style.display = isSection ? 'block' : 'none';
+    placeholderGroup.style.display = isSection ? 'none' : 'block';
+    requiredGroup.style.display = isSection ? 'none' : 'block';
+
+    // Update label text
+    const labelEl = labelGroup.querySelector('.form-label');
+    labelEl.textContent = isSection ? 'Título da Seção' : 'Rótulo / Pergunta';
+    fieldLabel.placeholder = isSection ? 'Ex: Dados Pessoais' : 'Ex: Qual seu nome completo?';
 }
 
 // Save field
@@ -282,8 +313,10 @@ fieldForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const type = fieldType.value;
     const label = fieldLabel.value.trim();
-    const placeholder = fieldPlaceholder.value.trim();
-    const required = fieldRequired.checked;
+    const isSection = type === 'section';
+    const placeholder = isSection ? '' : fieldPlaceholder.value.trim();
+    const subtitle = isSection ? fieldSubtitle.value.trim() : '';
+    const required = isSection ? false : fieldRequired.checked;
     const options = ['select', 'radio', 'checkbox'].includes(type)
         ? fieldOptions.value.split('\n').map(o => o.trim()).filter(Boolean)
         : [];
@@ -292,11 +325,11 @@ fieldForm.addEventListener('submit', (e) => {
 
     const id = fieldId.value;
     if (id) {
-        updateField(id, { type, label, placeholder, required, options });
-        showToast('Campo atualizado', 'success');
+        updateField(id, { type, label, placeholder, subtitle, required, options });
+        showToast(isSection ? 'Seção atualizada' : 'Campo atualizado', 'success');
     } else {
-        addField({ type, label, placeholder, required, options });
-        showToast('Campo adicionado', 'success');
+        addField({ type, label, placeholder, subtitle, required, options });
+        showToast(isSection ? 'Seção adicionada' : 'Campo adicionado', 'success');
     }
 
     closeModal();
@@ -318,8 +351,9 @@ function renderResponses() {
 
     if (count === 0) return;
 
+    const dataFields = fields.filter(f => f.type !== 'section');
     let html = '<table class="responses-table"><thead><tr><th>#</th><th>Data</th>';
-    fields.forEach(f => {
+    dataFields.forEach(f => {
         html += `<th>${escapeHtml(f.label)}</th>`;
     });
     html += '</tr></thead><tbody>';
@@ -328,7 +362,7 @@ function renderResponses() {
         html += '<tr>';
         html += `<td>${i + 1}</td>`;
         html += `<td class="td-date">${new Date(r.submittedAt).toLocaleString('pt-BR')}</td>`;
-        fields.forEach(f => {
+        dataFields.forEach(f => {
             const val = r.data[f.id];
             const display = Array.isArray(val) ? val.join(', ') : (val || '—');
             html += `<td>${escapeHtml(String(display))}</td>`;

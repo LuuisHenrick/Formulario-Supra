@@ -81,7 +81,7 @@ export function clearResponses() {
 }
 
 export function exportToCSV() {
-  const fields = getFields();
+  const fields = getFields().filter(f => f.type !== 'section');
   const responses = getResponses();
   if (!responses.length || !fields.length) return '';
 

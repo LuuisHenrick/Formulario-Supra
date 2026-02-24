@@ -1159,6 +1159,90 @@ select.form-input option {
   padding: 40px 0;
 }
 
+/* ---------- Section Divider ---------- */
+.section-divider {
+  position: relative;
+  padding: 20px 0 12px;
+  margin: 8px 0 4px;
+  border-top: 1px solid rgba(var(--cyan-rgb), 0.15);
+}
+
+.section-divider::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+  border-radius: 1px;
+}
+
+.section-divider-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--cyan), var(--green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+}
+
+.section-divider-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Section in preview */
+.preview-form .section-divider {
+  padding: 14px 0 8px;
+  margin: 4px 0 2px;
+}
+
+.preview-form .section-divider-title {
+  font-size: 0.9rem;
+}
+
+.preview-form .section-divider-subtitle {
+  font-size: 0.75rem;
+}
+
+/* Section in public form */
+.public-form .section-divider {
+  padding: 24px 0 14px;
+  margin: 12px 0 6px;
+}
+
+.public-form .section-divider-title {
+  font-size: 1.15rem;
+}
+
+/* Section item in admin field list */
+.field-item-section {
+  background: rgba(var(--cyan-rgb), 0.04);
+  border-color: rgba(var(--cyan-rgb), 0.12);
+  border-left: 3px solid var(--cyan);
+}
+
+.field-item-section:hover {
+  background: rgba(var(--cyan-rgb), 0.07);
+  border-color: rgba(var(--cyan-rgb), 0.2);
+  border-left-color: var(--cyan);
+}
+
+.field-subtitle-text {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   .app-container {

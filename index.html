@@ -171,15 +171,22 @@
             <option value="select">Seleção (Dropdown)</option>
             <option value="radio">Escolha Única (Radio)</option>
             <option value="checkbox">Múltipla Escolha (Checkbox)</option>
+            <option value="section">📑 Seção (Divisor)</option>
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="labelGroup">
           <label class="form-label" for="fieldLabel">Rótulo / Pergunta</label>
           <input type="text" class="form-input" id="fieldLabel" placeholder="Ex: Qual seu nome completo?" required />
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="subtitleGroup" style="display:none">
+          <label class="form-label" for="fieldSubtitle">Subtítulo da Seção (opcional)</label>
+          <input type="text" class="form-input" id="fieldSubtitle"
+            placeholder="Ex: Preencha os dados pessoais abaixo" />
+        </div>
+
+        <div class="form-group" id="placeholderGroup">
           <label class="form-label" for="fieldPlaceholder">Placeholder (opcional)</label>
           <input type="text" class="form-input" id="fieldPlaceholder" placeholder="Ex: Digite aqui..." />
         </div>
