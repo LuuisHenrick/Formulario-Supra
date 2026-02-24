@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SUPRA — Formulário</title>
+    <meta name="description" content="Preencha o formulário SUPRA." />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/src/styles/global.css" />
+</head>
+
+<body class="public-page">
+    <!-- Background particles -->
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <div class="form-page-container">
+        <!-- Header -->
+        <header class="form-header">
+            <img src="/logo.png" alt="SUPRA" class="form-logo" />
+        </header>
+
+        <!-- Form Card -->
+        <main class="form-main">
+            <div class="form-card glass-card" id="formCard">
+                <div class="form-card-header">
+                    <h1 class="form-card-title">Preencha o Formulário</h1>
+                    <p class="form-card-subtitle">Todos os campos marcados com <span class="required-mark">*</span> são
+                        obrigatórios.</p>
+                </div>
+                <form id="publicForm" class="public-form" novalidate>
+                    <!-- Fields rendered by JS -->
+                </form>
+                <div class="empty-state" id="noFieldsMsg" style="display:none">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                    </svg>
+                    <p>Formulário não configurado</p>
+                    <span>Este formulário ainda não possui campos.</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Success overlay -->
+        <div class="success-overlay" id="successOverlay">
+            <div class="success-content glass-card">
+                <div class="success-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#00FF85" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                </div>
+                <h2 class="success-title">Enviado com Sucesso!</h2>
+                <p class="success-text">Obrigado por preencher o formulário. Sua resposta foi registrada.</p>
+                <button class="btn btn-primary" id="btnNewResponse">Enviar outra resposta</button>
+            </div>
+        </div>
+
+        <footer class="form-footer">
+            <span>Powered by <strong>SUPRA</strong></span>
+        </footer>
+    </div>
+
+    <script type="module" src="/src/form.js"></script>
+</body>
+
+</html>
